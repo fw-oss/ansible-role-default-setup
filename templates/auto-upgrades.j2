@@ -1,0 +1,5 @@
+APT::Periodic::Enable "{{ auto_upgrade_enable }}";
+APT::Periodic::Update-Package-Lists "{{ auto_upgrade_update_package_list }}";
+APT::Periodic::Unattended-Upgrade "{{ auto_upgrade_unattended_upgrade }}";
+APT::Periodic::AutocleanInterval "{{ auto_upgrade_autoclean_interval }}";
+Unattended-Upgrade::Mail "{{ auto_upgrade_mail }}";

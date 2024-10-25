@@ -1,0 +1,25 @@
+---
+
+- name: mail smarthost | set mailname
+  debconf:
+    name: 'exim4-config'
+    question: 'exim4/mailname'
+    value: '{{ inventory_hostname }}'
+    vtype: string
+
+- name: mail smarthost | set config type
+  debconf:
+    name: 'exim4-config'
+    question: 'exim4/dc_eximconfig_configtype'
+    value: 'mail sent by smarthost; no local mail'
+    vtype: string
+
+- name: mail smarthost | set smarthost
+  debconf:
+    name: 'exim4-config'
+    question: 'exim4/dc_smarthost'
+    value: '{{ smtp_server }}'
+    vtype: string
+
+- name: mail smarthost | reconfigure package exim4-config
+  command: dpkg-reconfigure -fnoninteractive exim4-config

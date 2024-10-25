@@ -1,0 +1,152 @@
+---
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install necessary packages
+  ansible.builtin.apt:
+    name:
+      - fail2ban
+      - ufw
+
+- name: Disable ufw on peers
+  community.general.ufw:
+    state: disabled
+  when: not ufw_enabled | bool
+
+- name: Set PermitRootLogin
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?PermitRootLogin (.*)$"
+    state: present
+    line: PermitRootLogin {{ ssh_permit_root_login }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set ClientAliveInterval
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?ClientAliveInterval (.*)$"
+    state: present
+    line: ClientAliveInterval {{ ssh_client_alive_interval }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set ClientAliveCountMax
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?ClientAliveCountMax (.*)$"
+    state: present
+    line: ClientAliveCountMax {{ ssh_client_alive_count_max }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set ssh port
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?Port (.*)$"
+    state: present
+    line: "Port {{ ssh_port }}"
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set PasswordAuthentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?PasswordAuthentication (.*)$"
+    state: present
+    line: PasswordAuthentication {{ ssh_password_authentication }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set X11Forwarding
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?X11Forwarding (.*)$"
+    state: present
+    line: X11Forwarding {{ ssh_x11_forwarding }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set MaxAuthTries
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?MaxAuthTries (.*)$"
+    state: present
+    line: MaxAuthTries {{ ssh_max_auth_tries }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set AllowTcpForwarding
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?AllowTcpForwarding (.*)$"
+    state: present
+    line: AllowTcpForwarding {{ ssh_allow_tcp_forwarding }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set AllowAgentForwarding
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?AllowAgentForwarding (.*)$"
+    state: present
+    line: AllowAgentForwarding {{ ssh_allow_agent_forwarding }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set AuthorizedKeysFile
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?AuthorizedKeysFile (.*)$"
+    state: present
+    line: AuthorizedKeysFile {{ ssh_authorized_keys_file }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set PubkeyAuthentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?PubkeyAuthentication (.*)$"
+    state: present
+    line: PubkeyAuthentication {{ ssh_pubkey_authentication }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Set ChallengeResponseAuthentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^.?ChallengeResponseAuthentication (.*)$"
+    state: present
+    line: ChallengeResponseAuthentication {{ ssh_challenge_response_authentication }}
+    backrefs: true
+  notify: Restart ssh
+
+- name: Enable fail2ban
+  ansible.builtin.service:
+    name: fail2ban
+    enabled: true
+
+- name: Copy fail2ban ssh conf
+  ansible.builtin.template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.local
+    mode: "0644"
+  notify: Reload fail2ban
+
+- name: Allow ssh traffic via new port
+  community.general.ufw:
+    state: enabled
+    rule: allow
+    from_ip: any
+    to_ip: any
+    to_port: "{{ ssh_port }}"
+    proto: tcp
+    comment: sshd
+  when: ufw_enabled | bool
+  notify: Reload ufw
+
+- name: Flush Handlers
+  ansible.builtin.meta: flush_handlers
