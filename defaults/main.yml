@@ -18,6 +18,7 @@ apt_install_packages:
   - sudo
   - apt-dater-host
   - systemd-timesyncd # ab Debian 10 / Ubuntu 20.04 verfügbar
+  - tzdata # for timezone
   - needrestart
   - neofetch
   - pigz
