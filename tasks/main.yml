@@ -112,6 +112,7 @@
     name: systemd-timesyncd
     state: started
     enabled: true
+  changed_when: false
 
 - name: Timezone | set timezone
   community.general.timezone:
@@ -154,7 +155,7 @@
 - name: Fstrim | ensure a periodic fstrim run
   ansible.builtin.service:
     name: "fstrim.timer"
-    state: "started"
+    # state: "started"
     enabled: true
 
 - name: Add script for login mails
