@@ -30,7 +30,7 @@ apt_install_packages:
   - libssl-dev
 apt_remove_packages:
   - ntp
-apt_setup_unattended_upgrades: yes
+apt_setup_unattended_upgrades: true
 timezone_default: Europe/Berlin
 ca_certificates:
 smtp_server: ""

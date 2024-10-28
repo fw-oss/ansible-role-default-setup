@@ -10,14 +10,14 @@
     cache_valid_time: 3600
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: apt | remove default packages
-  apt:
+- name: Apt | remove default packages
+  ansible.builtin.apt:
     pkg: "{{ apt_remove_packages }}"
     state: absent
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: apt | install default packages
-  apt:
+- name: Apt | install default packages
+  ansible.builtin.apt:
     pkg: "{{ apt_install_packages }}"
     state: present
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
@@ -36,139 +36,142 @@
 - name: Flush Handlers
   ansible.builtin.meta: flush_handlers
 
-- name: needrestart | disable microcode module
-  lineinfile:
+- name: Needrestart | disable microcode module
+  ansible.builtin.lineinfile:
     path: /etc/needrestart/needrestart.conf
     regexp: "^#\\$nrconf{ucodehints}"
     line: "$nrconf{ucodehints} = 0;"
     state: present
 
-- name: general | set default shell to /bin/bash
-  lineinfile:
+- name: General | set default shell to /bin/bash
+  ansible.builtin.lineinfile:
     dest: /etc/default/useradd
     regexp: "^SHELL"
     line: "SHELL=/bin/bash"
     state: present
 
 # unattended upgrades
-- name: apt | install unattended-upgrades
-  apt:
+- name: Apt | install unattended-upgrades
+  ansible.builtin.apt:
     pkg: unattended-upgrades
     state: present
   when: apt_setup_unattended_upgrades
 
-- name: apt | configure unattended-upgrades
-  template:
+- name: Apt | configure unattended-upgrades
+  ansible.builtin.template:
     src: auto-upgrades.j2
     dest: /etc/apt/apt.conf.d/20auto-upgrades
   when: apt_setup_unattended_upgrades
 
 # secure ssh
-- name: ssh | secure ssh
+- name: Ssh | secure ssh
   ansible.builtin.include_tasks: ssh.yml
 
 # sudoers config
 - name: Create group "admin"
-  group:
+  ansible.builtin.group:
     name: admin
     state: present
 
 - name: Configure sudoers file 1/4
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     regexp: "^%admin="
     line: "%admin  ALL=(ALL) NOPASSWD:ALL"
 
 - name: Configure sudoers file 2/4
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     regexp: "^Defaults mailto="
     line: 'Defaults mailto="{{ ssh_login_notification_mail }}"'
 
 - name: Configure sudoers file 3/4
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     regexp: "^Defaults mail_always"
     state: absent
 
 - name: Configure sudoers file 4/4
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     regexp: "^Defaults insults"
     line: "Defaults insults"
 
 # make shell red as root
-- name: other | make shell red as root
-  lineinfile:
+- name: Other | make shell red as root
+  ansible.builtin.lineinfile:
     path: /root/.bashrc
     regexp: "^PS1="
     line: 'PS1="\[\033[1;41;37m\]\u\[\033[0;41;37m\]@$(hostname -f | sed "s/.{{ domain }}//")(\l):\w\[\033[41;00m\]$ "'
 
 # ntp
-- name: timezone | start ntp service
-  service:
+- name: Timezone | start ntp service
+  ansible.builtin.service:
     name: systemd-timesyncd
     state: started
-    enabled: yes
+    enabled: true
 
-- name: timezone | set timezone
+- name: Timezone | set timezone
   community.general.timezone:
     name: "{{ timezone_default }}"
 
-# install ca_certificates 
-- name: root ca | install certificates
-  get_url:
+# install ca_certificates
+- name: Root ca | install certificates
+  ansible.builtin.get_url:
     url: "{{ item }}"
     dest: "/usr/local/share/ca-certificates/{{ item | basename }}"
   with_items: "{{ ca_certificates }}"
   notify: root ca | update ca certificate store
 
 # configure mail
-- name: mail | basic mail configuration
+- name: Mail | basic mail configuration
   ansible.builtin.include_tasks: mail-basic.yml
   when:
     - "mail_configuration is defined"
     - "mail_configuration == 'smarthost' or mail_configuration == 'standalone'"
 
 # swap
-- name: swap | check if swap exists
-  command: "swapon -s"
+- name: Swap | check if swap exists
+  ansible.builtin.command: "swapon -s"
   register: swap_exists
+  changed_when: false
 
-- name: swap | check if zfs is used (https://github.com/openzfs/zfs/issues/7734)
-  command: "zfs list"
+- name: Swap | check if zfs is used (https://github.com/openzfs/zfs/issues/7734)
+  ansible.builtin.command: "zfs list"
   ignore_errors: true
   register: zfs_exists
+  changed_when: false
 
-- name: swap | include swap yml
+- name: Swap | include swap yml
   ansible.builtin.include_tasks: swap.yml
   when:
     - "swap_exists.stdout == ''"
     - "zfs_exists.failed == true"
 
-- name: fstrim | ensure a periodic fstrim run
+- name: Fstrim | ensure a periodic fstrim run
   ansible.builtin.service:
     name: "fstrim.timer"
     state: "started"
     enabled: true
 
-- name: add script for login mails
-  template:
+- name: Add script for login mails
+  ansible.builtin.template:
     src: send-mail-on-ssh-login.sh.j2
     dest: /usr/local/bin/send-mail-on-ssh-login.sh
-    mode: 0770
+    mode: "0770"
     owner: root
     group: root
-- name: enable mails on login
-  lineinfile:
+
+- name: Enable mails on login
+  ansible.builtin.lineinfile:
     path: /etc/pam.d/sshd
     line: "session optional pam_exec.so /usr/local/bin/send-mail-on-ssh-login.sh"
 
-- name: define fs.inotify.max_inotify_instances system-wide
-  template:
+- name: Define fs.inotify.max_inotify_instances system-wide
+  ansible.builtin.template:
     src: 20-basic-setup.conf.j2
     dest: /etc/sysctl.d/20-basic-setup.conf
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
   notify: reload sysctl

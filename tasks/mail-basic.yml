@@ -1,7 +1,7 @@
 ---
 
-- name: mail | install exim4
-  apt:
+- name: Mail | install exim4
+  ansible.builtin.apt:
     pkg:
       - "exim4"
       - "exim4-config"
@@ -10,7 +10,7 @@
     - "mail_configuration is defined"
     - "mail_configuration == 'smarthost' or mail_configuration == 'standalone'"
 
-- name: mail | remove exim4 config files
+- name: Mail | remove exim4 config files
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
@@ -21,13 +21,13 @@
     - "mail_configuration is defined"
     - "mail_configuration == 'smarthost' or mail_configuration == 'standalone'"
 
-- name: mail | smarthost mail configuration
+- name: Mail | smarthost mail configuration
   ansible.builtin.include_tasks: mail-smarthost.yml
   when:
     - "mail_configuration is defined"
     - "mail_configuration == 'smarthost'"
 
-- name: mail | standalone mail configuration
+- name: Mail | standalone mail configuration
   ansible.builtin.include_tasks: mail-standalone.yml
   when:
     - "mail_configuration is defined"

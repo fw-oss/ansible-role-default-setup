@@ -1,27 +1,27 @@
 ---
 
-- name: swap | create swap file
-  command: dd if=/dev/zero of={{ swap_file_path }} bs=1M count={{ swap_size_mb }}
+- name: Swap | create swap file
+  ansible.builtin.command: dd if=/dev/zero of={{ swap_file_path }} bs=1M count={{ swap_size_mb }}
   register: swapfile_register_create
 
-- name: swap | set swap file permissions
-  file:
+- name: Swap | set swap file permissions
+  ansible.builtin.file:
     path: "{{ swap_file_path }}"
     state: "file"
     owner: "root"
     group: "root"
     mode: "0600"
 
-- name: swap | initialize swap file
-  command: mkswap {{ swap_file_path }}
+- name: Swap | initialize swap file
+  ansible.builtin.command: mkswap {{ swap_file_path }}
   when: "swapfile_register_create is changed"
 
-- name: swap | enable swap file
-  command: swapon {{ swap_file_path }}
+- name: Swap | enable swap file
+  ansible.builtin.command: swapon {{ swap_file_path }}
   when: "swapfile_register_create is changed"
 
-- name: swap | manage swap file in /etc/fstab
-  mount:
+- name: Swap | manage swap file in /etc/fstab
+  ansible.posix.mount:
     src: "{{ swap_file_path }}"
     name: "none"
     fstype: "swap"

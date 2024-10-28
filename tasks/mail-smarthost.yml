@@ -1,25 +1,25 @@
 ---
 
-- name: mail smarthost | set mailname
-  debconf:
+- name: Mail smarthost | set mailname
+  ansible.builtin.debconf:
     name: 'exim4-config'
     question: 'exim4/mailname'
     value: '{{ inventory_hostname }}'
     vtype: string
 
-- name: mail smarthost | set config type
-  debconf:
+- name: Mail smarthost | set config type
+  ansible.builtin.debconf:
     name: 'exim4-config'
     question: 'exim4/dc_eximconfig_configtype'
     value: 'mail sent by smarthost; no local mail'
     vtype: string
 
-- name: mail smarthost | set smarthost
-  debconf:
+- name: Mail smarthost | set smarthost
+  ansible.builtin.debconf:
     name: 'exim4-config'
     question: 'exim4/dc_smarthost'
     value: '{{ smtp_server }}'
     vtype: string
 
 - name: mail smarthost | reconfigure package exim4-config
-  command: dpkg-reconfigure -fnoninteractive exim4-config
+  ansible.builtin.command: dpkg-reconfigure -fnoninteractive exim4-config
