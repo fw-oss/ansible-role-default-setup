@@ -10,7 +10,7 @@ name: CI
 
 defaults:
   run:
-    working-directory: "ansible_role_default_setup"
+    working-directory: "default_setup"
 
 jobs:
   lint:
@@ -20,7 +20,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v4
         with:
-          path: "ansible_role_docker"
+          path: "default_setup"
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5
@@ -50,7 +50,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v4
         with:
-          path: "ansible_role_docker"
+          path: "default_setup"
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5
