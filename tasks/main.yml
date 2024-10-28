@@ -173,6 +173,7 @@
   ansible.builtin.lineinfile:
     path: /etc/pam.d/sshd
     line: "session optional pam_exec.so /usr/local/bin/send-mail-on-ssh-login.sh"
+  when: ssh_login_notification_mail is defined and ssh_login_notification_mail | length
 
 - name: Define fs.inotify.max_inotify_instances system-wide
   ansible.builtin.template:
