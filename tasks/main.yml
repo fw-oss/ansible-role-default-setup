@@ -27,30 +27,12 @@
   ansible.builtin.stat:
     path: /var/run/reboot-required
 
-- name: Debug set hostname
-  ansible.builtin.debug:
-    msg: "{{ inventory_hostname }} - {{ ansible_os_family }}"
-
 # - name: Set hostname
 #   ansible.builtin.hostname:
 #     name: "{{ inventory_hostname }}"
 #     # use: systemd
 #   notify: Reboot
-# doesn't work on debian. works on ubuntu
-
-- name: Set hostname Debian
-  ansible.builtin.hostname:
-    name: "{{ inventory_hostname }}"
-    use: debian
-  notify: Reboot
-  when: ansible_facts['os_family'] == "Debian"
-
-# - name: Set hostname Ubuntu
-#   ansible.builtin.hostname:
-#     name: "{{ inventory_hostname }}"
-#     use: debian
-#   notify: Reboot
-#   when: ansible_facts['os_family'] == "Ubuntu"
+# doesn't work on debian. works on ubuntu?
 
 - name: Flush Handlers
   ansible.builtin.meta: flush_handlers
