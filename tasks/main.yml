@@ -27,6 +27,10 @@
   ansible.builtin.stat:
     path: /var/run/reboot-required
 
+- name: Debug set hostname
+  ansible.builtin.debug:
+    msg: "{{ inventory_hostname }}"
+
 - name: Set hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
@@ -84,6 +88,7 @@
     path: /etc/sudoers
     regexp: "^Defaults mailto="
     line: 'Defaults mailto="{{ ssh_login_notification_mail }}"'
+  when: ssh_login_notification_mail is defined and ssh_login_notification_mail | length
 
 - name: Configure sudoers file 3/4
   ansible.builtin.lineinfile:
@@ -122,6 +127,7 @@
     dest: "/usr/local/share/ca-certificates/{{ item | basename }}"
   with_items: "{{ ca_certificates }}"
   notify: root ca | update ca certificate store
+  when: ca_certificates is defined and ca_certificates | length
 
 # configure mail
 - name: Mail | basic mail configuration
