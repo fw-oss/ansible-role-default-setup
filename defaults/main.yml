@@ -1,3 +1,4 @@
+---
 apt_cache_valid_time: 3600
 apt_install_packages:
   - nload
@@ -64,6 +65,3 @@ inotify_max_user_watches: 8192
 max_map_count: 524288
 swappiness: 10
 net_core_somaxconn: 65535
-
-# defaults so testing works:
-domain: ""

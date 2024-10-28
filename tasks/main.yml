@@ -105,6 +105,7 @@
     path: /root/.bashrc
     regexp: "^PS1="
     line: 'PS1="\[\033[1;41;37m\]\u\[\033[0;41;37m\]@$(hostname -f | sed "s/.{{ domain }}//")(\l):\w\[\033[41;00m\]$ "'
+  when: domain is defined and domain | length
 
 # ntp
 - name: Timezone | start ntp service
