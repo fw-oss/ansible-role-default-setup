@@ -27,15 +27,16 @@
   ansible.builtin.stat:
     path: /var/run/reboot-required
 
-- name: Debug set hostname
-  ansible.builtin.debug:
-    msg: "{{ inventory_hostname }}"
+# - name: Debug set hostname
+#   ansible.builtin.debug:
+#     msg: "{{ inventory_hostname }}"
 
-- name: Set hostname
-  ansible.builtin.hostname:
-    name: "{{ inventory_hostname }}"
-    # use: systemd
-  notify: Reboot
+# - name: Set hostname
+#   ansible.builtin.hostname:
+#     name: "{{ inventory_hostname }}"
+#     # use: systemd
+#   notify: Reboot
+# doesn't work on debian. works on ubuntu
 
 - name: Flush Handlers
   ansible.builtin.meta: flush_handlers
