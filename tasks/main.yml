@@ -27,11 +27,12 @@
   ansible.builtin.stat:
     path: /var/run/reboot-required
 
-- name: Set hostname
-  ansible.builtin.hostname:
-    name: "{{ inventory_hostname }}"
-    use: systemd
-  notify: Reboot
+# - name: Set hostname
+#   ansible.builtin.hostname:
+#     name: "{{ inventory_hostname }}"
+#     # use: systemd
+#   notify: Reboot
+# doesn't work on debian. works on ubuntu?
 
 - name: Flush Handlers
   ansible.builtin.meta: flush_handlers
@@ -84,6 +85,7 @@
     path: /etc/sudoers
     regexp: "^Defaults mailto="
     line: 'Defaults mailto="{{ ssh_login_notification_mail }}"'
+  when: ssh_login_notification_mail is defined and ssh_login_notification_mail | length
 
 - name: Configure sudoers file 3/4
   ansible.builtin.lineinfile:
@@ -103,6 +105,7 @@
     path: /root/.bashrc
     regexp: "^PS1="
     line: 'PS1="\[\033[1;41;37m\]\u\[\033[0;41;37m\]@$(hostname -f | sed "s/.{{ domain }}//")(\l):\w\[\033[41;00m\]$ "'
+  when: domain is defined and domain | length
 
 # ntp
 - name: Timezone | start ntp service
@@ -110,6 +113,7 @@
     name: systemd-timesyncd
     state: started
     enabled: true
+  changed_when: false
 
 - name: Timezone | set timezone
   community.general.timezone:
@@ -122,6 +126,7 @@
     dest: "/usr/local/share/ca-certificates/{{ item | basename }}"
   with_items: "{{ ca_certificates }}"
   notify: root ca | update ca certificate store
+  when: ca_certificates is defined and ca_certificates | length
 
 # configure mail
 - name: Mail | basic mail configuration
@@ -151,7 +156,7 @@
 - name: Fstrim | ensure a periodic fstrim run
   ansible.builtin.service:
     name: "fstrim.timer"
-    state: "started"
+    # state: "started"
     enabled: true
 
 - name: Add script for login mails
@@ -161,11 +166,13 @@
     mode: "0770"
     owner: root
     group: root
+  when: ssh_login_notification_mail is defined and ssh_login_notification_mail | length
 
 - name: Enable mails on login
   ansible.builtin.lineinfile:
     path: /etc/pam.d/sshd
     line: "session optional pam_exec.so /usr/local/bin/send-mail-on-ssh-login.sh"
+  when: ssh_login_notification_mail is defined and ssh_login_notification_mail | length
 
 - name: Define fs.inotify.max_inotify_instances system-wide
   ansible.builtin.template:

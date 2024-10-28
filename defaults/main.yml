@@ -1,3 +1,4 @@
+---
 apt_cache_valid_time: 3600
 apt_install_packages:
   - nload
@@ -18,6 +19,7 @@ apt_install_packages:
   - sudo
   - apt-dater-host
   - systemd-timesyncd # ab Debian 10 / Ubuntu 20.04 verfügbar
+  - tzdata # for timezone
   - needrestart
   - neofetch
   - pigz
@@ -32,7 +34,7 @@ apt_remove_packages:
   - ntp
 apt_setup_unattended_upgrades: true
 timezone_default: Europe/Berlin
-ca_certificates:
+# ca_certificates:
 smtp_server: ""
 swap_file_path: "/swapfile"
 swap_size_mb: 4096
@@ -47,7 +49,7 @@ ssh_x11_forwarding: "no"
 ssh_max_auth_tries: 5
 ssh_allow_tcp_forwarding: "no"
 ssh_allow_agent_forwarding: "no"
-ssh_authorized_keys_file: ~/.ssh/authorized_keys"
+ssh_authorized_keys_file: "~/.ssh/authorized_keys"
 ssh_pubkey_authentication: "yes"
 ssh_challenge_response_authentication: "no"
 ufw_enabled: "false"
