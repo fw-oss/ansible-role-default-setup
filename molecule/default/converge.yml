@@ -23,4 +23,4 @@
       failed_when: systemctl_status.rc > 1
 
   roles:
-    - role: default_setup
+    - role: ansible_role_default_setup
