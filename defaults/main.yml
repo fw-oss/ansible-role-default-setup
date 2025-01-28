@@ -18,7 +18,7 @@ apt_install_packages:
   - dnsutils
   - sudo
   - apt-dater-host
-  - systemd-timesyncd # ab Debian 10 / Ubuntu 20.04 verfügbar
+  - systemd-timesyncd # available Debian 10 / Ubuntu 20.04 upwards
   - tzdata # for timezone
   - needrestart
   - neofetch

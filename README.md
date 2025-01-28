@@ -77,5 +77,5 @@ auto_upgrade_mail:
 domain:
 
 TODO:
-
+ca_certificates:
 mail_configuration: 'smarthost' or 'standalone'

@@ -21,5 +21,5 @@
     value: '{{ smtp_server }}'
     vtype: string
 
-- name: mail smarthost | reconfigure package exim4-config
+- name: Mail smarthost | reconfigure package exim4-config
   ansible.builtin.command: dpkg-reconfigure -fnoninteractive exim4-config

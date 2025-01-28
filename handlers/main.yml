@@ -27,8 +27,8 @@
     name: fail2ban
     state: restarted
 
-- name: root ca | update ca certificate store
-  command: update-ca-certificates
+- name: Root ca | update ca certificate store
+  ansible.builtin.command: update-ca-certificates
 
-- name: reload sysctl
-  shell: sysctl --system
+- name: Reload sysctl
+  ansible.builtin.shell: sysctl --system
