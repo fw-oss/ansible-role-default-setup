@@ -5,7 +5,7 @@ galaxy_info:
   author: Tobias Dillig
   company: FW OSS
   description: updates apt cache, install default packages, system hardening and sets up unattended updates
-  issue_tracker_url: ""
+  issue_tracker_url: "https://github.com/fw-oss/ansible-role-default-setup/issues"
   license: MIT
   min_ansible_version: "2.9"
   platforms:
