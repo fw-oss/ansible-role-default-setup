@@ -1,5 +1,14 @@
 ---
 # tasks file for role_host_basics
+- name: Print stuff before 
+  ansible.builtin.debug:
+    msg:
+      - "{{ ansible_distribution }}"
+      - "{{ ansible_distribution_release }}"
+      - "{{ ansible_os_family }}"
+      - "{{ ansible_service_mgr }}"
+      - "{{ ansible_system }}"
+
 - name: Update and upgrade apt packages
   become: true
   ansible.builtin.apt:
@@ -48,6 +57,7 @@
     name: "{{ inventory_hostname }}"
     # use: systemd
   notify: Reboot
+  when: not ansible_distribution == 'Debian'
 
 # - name: Set hostname
 #   ansible.builtin.hostname:
