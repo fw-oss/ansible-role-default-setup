@@ -1,0 +1,25 @@
+---
+galaxy_info:
+  role_name: default_setup
+  namespace: fw_oss
+  author: Tobias Dillig
+  company: FW OSS
+  description: updates apt cache, install default packages, system hardening and sets up unattended updates
+  issue_tracker_url: "https://github.com/fw-oss/ansible-role-default-setup/issues"
+  license: MIT
+  min_ansible_version: "2.9"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - xenial
+        - bionic
+        - focal
+    - name: Debian
+      versions:
+        - stretch
+        - buster
+  galaxy_tags:
+    - fwoss
+    - system
+
+dependencies: []

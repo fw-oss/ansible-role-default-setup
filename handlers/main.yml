@@ -1,0 +1,34 @@
+---
+# handlers file for role_host_basics
+- name: Reboot
+  become: true
+  ansible.builtin.reboot:
+    msg: "Reboot initiated by Ansible"
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: whoami
+
+- name: Restart ssh
+  become: true
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+
+- name: Reload ufw
+  become: true
+  community.general.ufw:
+    state: reloaded
+
+- name: Reload fail2ban
+  become: true
+  ansible.builtin.service:
+    name: fail2ban
+    state: restarted
+
+- name: Root ca | update ca certificate store
+  ansible.builtin.command: update-ca-certificates
+
+- name: Reload sysctl
+  ansible.builtin.shell: sysctl --system

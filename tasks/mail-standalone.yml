@@ -1,0 +1,18 @@
+---
+
+- name: Mail standalone | set mailname
+  ansible.builtin.debconf:
+    name: 'exim4-config'
+    question: 'exim4/mailname'
+    value: '{{ inventory_hostname }}'
+    vtype: string
+
+- name: Mail standalone | set config type
+  ansible.builtin.debconf:
+    name: 'exim4-config'
+    question: 'exim4/dc_eximconfig_configtype'
+    value: 'internet site; mail is sent and received directly using SMTP'
+    vtype: string
+
+- name: Mail standalone | reconfigure package exim4-config
+  ansible.builtin.command: dpkg-reconfigure -fnoninteractive exim4-config

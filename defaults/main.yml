@@ -1,0 +1,67 @@
+---
+apt_cache_valid_time: 3600
+apt_install_packages:
+  - nload
+  - htop
+  - iotop
+  - git
+  - ncdu
+  - tmux
+  - ncftp
+  - mtr
+  - curl
+  - wget
+  - nano
+  - rsync
+  - zip
+  - unzip
+  - dnsutils
+  - sudo
+  - apt-dater-host
+  - systemd-timesyncd # available Debian 10 / Ubuntu 20.04 upwards
+  - tzdata # for timezone
+  - needrestart
+  - neofetch
+  - pigz
+  - mc
+  - nmap
+  - net-tools
+  - openssh-client
+  - python3-pip
+  - libffi-dev
+  - libssl-dev
+apt_remove_packages:
+  - ntp
+apt_setup_unattended_upgrades: true
+timezone_default: Europe/Berlin
+# ca_certificates:
+smtp_server: ""
+swap_file_path: "/swapfile"
+swap_size_mb: 4096
+
+# defaults file for role_ssh_config
+ssh_permit_root_login: "no"
+ssh_client_alive_interval: 300
+ssh_client_alive_count_max: 5
+ssh_port: 22
+ssh_password_authentication: "no"
+ssh_x11_forwarding: "no"
+ssh_max_auth_tries: 5
+ssh_allow_tcp_forwarding: "no"
+ssh_allow_agent_forwarding: "no"
+ssh_authorized_keys_file: "~/.ssh/authorized_keys"
+ssh_pubkey_authentication: "yes"
+ssh_challenge_response_authentication: "no"
+ufw_enabled: "false"
+
+auto_upgrade_enable: 1
+auto_upgrade_update_package_list: 1
+auto_upgrade_unattended_upgrade: 1
+auto_upgrade_autoclean_interval: 7
+
+inotify_max_queued_events: 16384
+inotify_max_user_instances: 32768
+inotify_max_user_watches: 8192
+max_map_count: 524288
+swappiness: 10
+net_core_somaxconn: 65535
