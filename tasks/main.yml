@@ -165,7 +165,6 @@
 - name: Fstrim | ensure a periodic fstrim run
   ansible.builtin.service:
     name: "fstrim.timer"
-    # state: "started"
     enabled: true
 
 - name: Add script for login mails
