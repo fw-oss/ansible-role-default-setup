@@ -82,7 +82,7 @@ apt_install_packages:
   - dnsutils
   - sudo
   - apt-dater-host
-  - systemd-timesyncd # ab Debian 10 / Ubuntu 20.04 verfügbar
+  - systemd-timesyncd # available Debian 10 / Ubuntu 20.04 upwards
   - tzdata # for timezone
   - needrestart
   - neofetch
@@ -102,8 +102,8 @@ apt_setup_unattended_upgrades: true
 
 ## Dependencies
 
-[Community General Collection](https://docs.ansible.com/ansible/latest/collections/community/general/index.html) (comes with `ansible`, but not with `ansible-core`) for community.general.timezone, community.general.ufw  
-[Ansible Posix Collection](https://docs.ansible.com/ansible/latest/collections/ansible/posix/index.html) (comes with `ansible`, but not with `ansible-core`) for ansible.posix.mount
+[Community General Collection](https://docs.ansible.com/ansible/latest/collections/community/general/index.html) (comes with `ansible`, but not with `ansible-core`) for `community.general.timezone`, `community.general.ufw ` 
+[Ansible Posix Collection](https://docs.ansible.com/ansible/latest/collections/ansible/posix/index.html) (comes with `ansible`, but not with `ansible-core`) for `ansible.posix.mount`
 
 
 ## Example Playbook
@@ -112,6 +112,9 @@ apt_setup_unattended_upgrades: true
 ---
 - hosts: all
   vars:
+    domain: intranet.example.com
+    auto_upgrade_mail: sysadmin@example.com
+    ssh_permit_root_login: true
   roles:
     - role: fw_oss.default_setup
       become: true
