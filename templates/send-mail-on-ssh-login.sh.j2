@@ -11,6 +11,8 @@ else
     echo "Date: $(date)"
     echo "Host: $(hostname -f)"
     echo "Server: $(uname -a)"
-  } | mail -s "$PAM_SERVICE login on $(hostname -f) for account $PAM_USER" {{ ssh_login_notification_mail }}
+  } | mail -s "$PAM_SERVICE login on $(hostname -f) for account $PAM_USER" \
+  {{ '-r ' + inventory_hostname + '@' + sender_email_domain if sender_email_domain is defined }} \
+  {{ ssh_login_notification_mail }}
 fi
 exit 0
