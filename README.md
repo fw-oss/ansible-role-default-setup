@@ -114,6 +114,10 @@ apt_setup_unattended_upgrades: true
   vars:
     domain: intranet.example.com
     auto_upgrade_mail: sysadmin@example.com
+    mail_configuration: smarthost
+    smtp_server: contoso-com.mail.protection.outlook.com
+    ssh_login_notification_mail: duke@company.example it-support@example.com
+    sender_email_domain: contoso.com
     ssh_permit_root_login: true
   roles:
     - role: fw_oss.default_setup
