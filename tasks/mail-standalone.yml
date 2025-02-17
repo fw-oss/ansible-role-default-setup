@@ -16,3 +16,5 @@
 
 - name: Mail standalone | reconfigure package exim4-config
   ansible.builtin.command: dpkg-reconfigure -fnoninteractive exim4-config
+  register: mailput
+  changed_when: mailput.rc != 0
