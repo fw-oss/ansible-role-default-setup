@@ -114,6 +114,7 @@ apt_setup_unattended_upgrades: true
   vars:
     domain: intranet.example.com
     auto_upgrade_mail: sysadmin@example.com
+    auto_upgrade_mail_trigger: on-change
     mail_configuration: smarthost
     smtp_server: contoso-com.mail.protection.outlook.com
     ssh_login_notification_mail: duke@company.example it-support@example.com

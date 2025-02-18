@@ -135,6 +135,7 @@
     dest: /etc/fail2ban/jail.local
     mode: "0644"
   notify: Reload fail2ban
+  diff: true
 
 - name: Allow ssh traffic via new port
   community.general.ufw:
