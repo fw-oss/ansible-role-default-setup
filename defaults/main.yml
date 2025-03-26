@@ -49,7 +49,7 @@ ssh_x11_forwarding: "no"
 ssh_max_auth_tries: 5
 ssh_allow_tcp_forwarding: "no"
 ssh_allow_agent_forwarding: "no"
-ssh_authorized_keys_file: "~/.ssh/authorized_keys"
+ssh_authorized_keys_file: ".ssh/authorized_keys"
 ssh_pubkey_authentication: "yes"
 ssh_challenge_response_authentication: "no"
 ufw_enabled: "false"
