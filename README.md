@@ -120,6 +120,7 @@ apt_setup_unattended_upgrades: true
     ssh_login_notification_mail: duke@company.example it-support@example.com
     sender_email_domain: contoso.com
     ssh_permit_root_login: true
+    ssh_allow_users: "*@192.168.0.* peter@192.168.255.1"
   roles:
     - role: fw_oss.default_setup
       become: true

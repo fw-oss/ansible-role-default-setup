@@ -124,6 +124,16 @@
     backrefs: true
   notify: Restart ssh
 
+- name: Set AllowUsers
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "AllowUsers "
+    state: present
+    line: AllowUsers {{ ssh_allow_users }}
+  notify: Restart ssh
+  when: ssh_allow_users is defined
+  diff: true
+
 - name: Enable fail2ban
   ansible.builtin.service:
     name: fail2ban
