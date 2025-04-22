@@ -1,1 +1,17 @@
-/.idea/
+### Ansible ###
+*.retry
+
+### Intellij ###
+.idea/
+
+### VisualStudioCode ###
+.vscode/
+.history/
+*.vsix
+.history
+.ionide
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride

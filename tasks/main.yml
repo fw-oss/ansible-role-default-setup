@@ -70,6 +70,7 @@
     dest: /etc/apt/apt.conf.d/20auto-upgrades
     mode: '644'
   when: apt_setup_unattended_upgrades
+  diff: true
 
 # secure ssh
 - name: Ssh | secure ssh
@@ -175,6 +176,7 @@
     owner: root
     group: root
   when: ssh_login_notification_mail is defined and ssh_login_notification_mail | length
+  diff: true
 
 - name: Enable mails on login
   ansible.builtin.lineinfile:
@@ -190,3 +192,4 @@
     owner: root
     group: root
   notify: Reload sysctl
+  diff: true

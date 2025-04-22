@@ -54,7 +54,7 @@ ssh_x11_forwarding: "no"
 ssh_max_auth_tries: 5
 ssh_allow_tcp_forwarding: "no"
 ssh_allow_agent_forwarding: "no"
-ssh_authorized_keys_file: "~/.ssh/authorized_keys"
+ssh_authorized_keys_file: ".ssh/authorized_keys"
 ssh_pubkey_authentication: "yes"
 ssh_challenge_response_authentication: "no"
 ssh_login_notification_mail:
@@ -114,6 +114,11 @@ apt_setup_unattended_upgrades: true
   vars:
     domain: intranet.example.com
     auto_upgrade_mail: sysadmin@example.com
+    auto_upgrade_mail_trigger: on-change
+    mail_configuration: smarthost
+    smtp_server: contoso-com.mail.protection.outlook.com
+    ssh_login_notification_mail: duke@company.example it-support@example.com
+    sender_email_domain: contoso.com
     ssh_permit_root_login: true
   roles:
     - role: fw_oss.default_setup

@@ -14,6 +14,14 @@
     value: 'mail sent by smarthost; no local mail'
     vtype: string
 
+- name: Mail smarthost | set From mail (maybe?)
+  ansible.builtin.debconf:
+    name: 'exim4-config'
+    question: 'exim4/dc_readhost'
+    value: '{{ sender_email_domain }}'
+    vtype: string
+  when: sender_email_domain is defined
+
 - name: Mail smarthost | set smarthost
   ansible.builtin.debconf:
     name: 'exim4-config'
@@ -23,3 +31,5 @@
 
 - name: Mail smarthost | reconfigure package exim4-config
   ansible.builtin.command: dpkg-reconfigure -fnoninteractive exim4-config
+  register: mailput
+  changed_when: mailput.rc != 0
