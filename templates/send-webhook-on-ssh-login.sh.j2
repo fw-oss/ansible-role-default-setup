@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ "$PAM_TYPE" != "open_session" ]
+then
+  exit 0
+else
+  curl {{ item.options }} {{ item.url }}
+fi
+exit 0

@@ -182,7 +182,32 @@
   ansible.builtin.lineinfile:
     path: /etc/pam.d/sshd
     line: "session optional pam_exec.so /usr/local/bin/send-mail-on-ssh-login.sh"
-  when: ssh_login_notification_mail is defined and ssh_login_notification_mail | length
+    state: "{{ 'present'
+      if ssh_login_notification_mail is defined
+      and ssh_login_notification_mail | length
+      else 'absent' }}"  # deaktivate
+  diff: true
+
+- name: Add script for login webhook
+  ansible.builtin.template:
+    src: send-webhook-on-ssh-login.sh.j2
+    dest: /usr/local/bin/send-webhook-on-ssh-login-{{ item.name }}.sh
+    mode: "0770"
+    owner: root
+    group: root
+  when: ssh_login_notification_webhooks is defined
+  diff: true
+  loop: "{{ ssh_login_notification_webhooks }}"
+
+- name: Enable webhook on login
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sshd
+    line: >-
+      session optional pam_exec.so
+      /usr/local/bin/send-webhook-on-ssh-login-{{ item.name }}.sh
+  when: ssh_login_notification_webhooks is defined
+  diff: true
+  loop: "{{ ssh_login_notification_webhooks }}"
 
 - name: Define fs.inotify.max_inotify_instances system-wide
   ansible.builtin.template:
