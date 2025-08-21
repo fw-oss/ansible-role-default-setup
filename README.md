@@ -134,6 +134,8 @@ apt_setup_unattended_upgrades: true
           -X POST -H 'Content-Type: application/json' -d "{ \"content\":
           \"$DISCORDUSER: User \`$PAM_USER\` logged in to \`$HOSTNAME\`
           (remote host: $PAM_RHOST).\" }"
+      - name: fax
+        state: absent
     ssh_permit_root_login: true
     ssh_allow_users: "*@192.168.0.* peter@192.168.255.1"
   roles:
