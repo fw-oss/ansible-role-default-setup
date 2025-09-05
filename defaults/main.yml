@@ -59,9 +59,14 @@ auto_upgrade_update_package_list: 1
 auto_upgrade_unattended_upgrade: 1
 auto_upgrade_autoclean_interval: 7
 
+# Change these if you know what you're doing or a random app tells you to:
+# File system watchers
 inotify_max_queued_events:
 inotify_max_user_instances:
 inotify_max_user_watches:
+# Smth about memory consumption
 max_map_count:
+# How soon to write to swap instead of RAM
 swappiness:
+# smth about TCP/IP connections
 net_core_somaxconn:

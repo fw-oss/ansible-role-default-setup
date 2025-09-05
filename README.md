@@ -6,6 +6,95 @@ Executes a basic setup on a blank server
 
 Ansible Version 2.9
 
+## Dependencies
+
+[Community General Collection](https://docs.ansible.com/ansible/latest/collections/community/general/index.html) (comes with `ansible`, but not with `ansible-core`) for `community.general.timezone`, `community.general.ufw ` 
+[Ansible Posix Collection](https://docs.ansible.com/ansible/latest/collections/ansible/posix/index.html) (comes with `ansible`, but not with `ansible-core`) for `ansible.posix.mount`
+
+
+## Example Playbook
+
+```yaml
+---
+- hosts: all
+  vars:
+    domain: intranet.example.com
+    auto_upgrade_mail: sysadmin@example.com
+    auto_upgrade_mail_trigger: on-change
+    mail_configuration: smarthost
+    smtp_server: contoso-com.mail.protection.outlook.com
+    ssh_login_notification_mail: duke@company.example it-support@example.com
+    sender_email_domain: contoso.com
+    ssh_login_notification_webhooks:
+      - name: mattermost
+        url: chat.example.com/12345
+        options: >-
+          -i -X POST --data-urlencode 'payload={"text": "SSH-Login\nUser:
+          '"$PAM_USER"'\nRemote Host: '"$PAM_RHOST"'\nService:
+          '"$PAM_SERVICE"'\nTTY: '"$PAM_TTY"'\nDate: '"$(date)"'\nHost:
+          '"$(hostname -f)"'\nServer: '"$(uname -a)"'", "username":
+          "SSH Login PAM Webhook"}'
+      - name: discord
+        url: https://dicord.com/api/webhooks
+        options: >-
+          -X POST -H 'Content-Type: application/json' -d "{ \"content\":
+          \"$DISCORDUSER: User \`$PAM_USER\` logged in to \`$HOSTNAME\`
+          (remote host: $PAM_RHOST).\" }"
+      - name: fax
+        state: absent
+  roles:
+    - role: fw_oss.default_setup
+      become: true
+```
+
+```yaml
+---
+- hosts: all
+  vars:
+    ssh_permit_root_login: true
+    ssh_allow_users: "*@192.168.0.* peter@192.168.255.1"
+    inotify_max_queued_events: 16384
+    inotify_max_user_instances: 32768
+    inotify_max_user_watches: 8192
+    max_map_count: 524288
+    swappiness: 10
+    net_core_somaxconn: 65535
+  roles:
+    - role: fw_oss.default_setup
+      become: true
+```
+
+## Details
+
+- installs packages
+- sets hostname
+- hardenes ssh:
+    - install, config and enable fail2ban
+    - disable ufw
+    - permit/disallow Root login
+    - set/disable ClientAliveInterval and ClientAliveCountMax
+    - set port (and allow in ufw)
+    - permit/disallow Password auth
+    - permit/disallow X11 Forwarding
+    - set/disable MaxAuthTries
+    - permit/disallow TCP Forwarding
+    - permit/disallow Agent Forwarding
+    - define file for authorized keys
+    - PubkeyAuthentication
+    - ChallengeResponseAuthentication
+- configures sudo:
+    - creates group "admin" with passwordless full privileges
+    - sets mail adress for unauth. sudo attempts (excl. -l, -v)  
+- changes root prompt
+- sets timezone
+- mail on login
+- sets swap:
+    - check for swap
+    - check for zfs
+    - if both fail: create swapfile etc.
+- some kernel stuff:
+    - swapiness
+
 ## Role Variables
 
 ```yml
@@ -99,86 +188,6 @@ apt_remove_packages:
 apt_setup_unattended_upgrades: true
 
 ```
-
-## Dependencies
-
-[Community General Collection](https://docs.ansible.com/ansible/latest/collections/community/general/index.html) (comes with `ansible`, but not with `ansible-core`) for `community.general.timezone`, `community.general.ufw ` 
-[Ansible Posix Collection](https://docs.ansible.com/ansible/latest/collections/ansible/posix/index.html) (comes with `ansible`, but not with `ansible-core`) for `ansible.posix.mount`
-
-
-## Example Playbook
-
-```yaml
----
-- hosts: all
-  vars:
-    domain: intranet.example.com
-    auto_upgrade_mail: sysadmin@example.com
-    auto_upgrade_mail_trigger: on-change
-    mail_configuration: smarthost
-    smtp_server: contoso-com.mail.protection.outlook.com
-    ssh_login_notification_mail: duke@company.example it-support@example.com
-    sender_email_domain: contoso.com
-    ssh_login_notification_webhooks:
-      - name: mattermost
-        url: chat.example.com/12345
-        options: >-
-          -i -X POST --data-urlencode 'payload={"text": "SSH-Login\nUser:
-          '"$PAM_USER"'\nRemote Host: '"$PAM_RHOST"'\nService:
-          '"$PAM_SERVICE"'\nTTY: '"$PAM_TTY"'\nDate: '"$(date)"'\nHost:
-          '"$(hostname -f)"'\nServer: '"$(uname -a)"'", "username":
-          "SSH Login PAM Webhook"}'
-      - name: discord
-        url: https://dicord.com/api/webhooks
-        options: >-
-          -X POST -H 'Content-Type: application/json' -d "{ \"content\":
-          \"$DISCORDUSER: User \`$PAM_USER\` logged in to \`$HOSTNAME\`
-          (remote host: $PAM_RHOST).\" }"
-      - name: fax
-        state: absent
-    ssh_permit_root_login: true
-    ssh_allow_users: "*@192.168.0.* peter@192.168.255.1"
-    inotify_max_queued_events: 16384
-    inotify_max_user_instances: 32768
-    inotify_max_user_watches: 8192
-    max_map_count: 524288
-    swappiness: 10
-    net_core_somaxconn: 65535
-  roles:
-    - role: fw_oss.default_setup
-      become: true
-```
-
-## Details
-
-- installs packages
-- sets hostname
-- hardenes ssh:
-    - install, config and enable fail2ban
-    - disable ufw
-    - permit/disallow Root login
-    - set/disable ClientAliveInterval and ClientAliveCountMax
-    - set port (and allow in ufw)
-    - permit/disallow Password auth
-    - permit/disallow X11 Forwarding
-    - set/disable MaxAuthTries
-    - permit/disallow TCP Forwarding
-    - permit/disallow Agent Forwarding
-    - define file for authorized keys
-    - PubkeyAuthentication
-    - ChallengeResponseAuthentication
-- configures sudo:
-    - creates group "admin" with passwordless full privileges
-    - sets mail adress for unauth. sudo attempts (excl. -l, -v)  
-- changes root prompt
-- sets timezone
-- mail on login
-- sets swap:
-    - check for swap
-    - check for zfs
-    - if both fail: create swapfile etc.
-- some kernel stuff:
-    - swapiness
 
 ### ToDo:
 - set shell
