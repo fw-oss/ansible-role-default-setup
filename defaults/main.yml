@@ -51,6 +51,7 @@ timezone_default: Europe/Berlin
 smtp_server: ""
 swap_file_path: "/swapfile"
 swap_size_mb: 4096
+setup_default_shell: /bin/bash
 
 # defaults file for role_ssh_config
 ssh_permit_root_login: "no"

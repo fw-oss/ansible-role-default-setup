@@ -50,13 +50,15 @@
     regexp: "^#\\$nrconf{ucodehints}"
     line: "$nrconf{ucodehints} = 0;"
     state: present
+  when: apt_install_packages is ansible.builtin.contains('needrestart')
 
-- name: General | set default shell to /bin/bash
+- name: General | set default shell
   ansible.builtin.lineinfile:
     dest: /etc/default/useradd
     regexp: "^SHELL"
-    line: "SHELL=/bin/bash"
+    line: "SHELL={{ setup_default_shell }}"
     state: present
+  when: setup_default_shell | length
 
 # unattended upgrades
 - name: Apt | install unattended-upgrades
@@ -125,6 +127,7 @@
     state: started
     enabled: true
   changed_when: false
+  when: apt_install_packages is ansible.builtin.contains('systemd-timesyncd')
 
 - name: Timezone | set timezone
   community.general.timezone:
