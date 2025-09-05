@@ -58,7 +58,9 @@
     regexp: "^SHELL"
     line: "SHELL={{ setup_default_shell }}"
     state: present
-  when: setup_default_shell | length
+  when:
+    - setup_default_shell is defined
+    - setup_default_shell | length
 
 # unattended upgrades
 - name: Apt | install unattended-upgrades
@@ -226,3 +228,10 @@
     group: root
   notify: Reload sysctl
   diff: true
+  when:
+    inotify_max_queued_events is defined
+    or inotify_max_user_instances is defined
+    or inotify_max_user_watches is defined
+    or max_map_count  is defined
+    or swappiness is defined
+    or net_core_somaxconn  is defined
