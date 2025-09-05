@@ -43,6 +43,7 @@
 - name: Flush Handlers
   ansible.builtin.meta: flush_handlers
 
+# Needrestart: Don't require the user to acknowledge pending updates
 - name: Needrestart | disable microcode module
   ansible.builtin.lineinfile:
     path: /etc/needrestart/needrestart.conf
