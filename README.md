@@ -138,6 +138,12 @@ apt_setup_unattended_upgrades: true
         state: absent
     ssh_permit_root_login: true
     ssh_allow_users: "*@192.168.0.* peter@192.168.255.1"
+    inotify_max_queued_events: 16384
+    inotify_max_user_instances: 32768
+    inotify_max_user_watches: 8192
+    max_map_count: 524288
+    swappiness: 10
+    net_core_somaxconn: 65535
   roles:
     - role: fw_oss.default_setup
       become: true

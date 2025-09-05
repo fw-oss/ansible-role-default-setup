@@ -134,6 +134,7 @@
   ansible.builtin.get_url:
     url: "{{ item }}"
     dest: "/usr/local/share/ca-certificates/{{ item | basename }}"
+    mode: "0644"
   with_items: "{{ ca_certificates }}"
   notify: Root ca | update ca certificate store
   when: ca_certificates is defined and ca_certificates | length
@@ -215,7 +216,7 @@
 - name: Define fs.inotify.max_inotify_instances system-wide
   ansible.builtin.template:
     src: 20-basic-setup.conf.j2
-    dest: /etc/sysctl.d/20-basic-setup.conf
+    dest: /etc/sysctl.d/20-ansible-fw-oss-default-setup.conf
     mode: "0644"
     owner: root
     group: root
