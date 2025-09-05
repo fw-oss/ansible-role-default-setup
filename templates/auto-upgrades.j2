@@ -2,7 +2,7 @@ APT::Periodic::Enable "{{ auto_upgrade_enable }}";
 APT::Periodic::Update-Package-Lists "{{ auto_upgrade_update_package_list }}";
 APT::Periodic::Unattended-Upgrade "{{ auto_upgrade_unattended_upgrade }}";
 APT::Periodic::AutocleanInterval "{{ auto_upgrade_autoclean_interval }}";
-{% if auto_upgrade_mail is defined and auto_upgrade_mail | length %}
+{% if auto_upgrade_mail is defined and auto_upgrade_mail != None and auto_upgrade_mail | length %}
 Unattended-Upgrade::Mail "{{ auto_upgrade_mail }}";
 Unattended-Upgrade::MailReport "{{ auto_upgrade_mail_trigger | default('always') }}";
 {% endif %}

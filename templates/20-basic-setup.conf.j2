@@ -1,6 +1,6 @@
-fs.inotify.max_queued_events = {{ inotify_max_queued_events }}
-fs.inotify.max_user_instances = {{ inotify_max_user_instances }}
-fs.inotify.max_user_watches = {{ inotify_max_user_watches }}
-net.core.somaxconn = {{ net_core_somaxconn }}
-vm.max_map_count={{ max_map_count }}
-vm.swappiness={{ swappiness }}
+{{ 'fs.inotify.max_queued_events = ' inotify_max_queued_events if inotify_max_queued_events != None }}
+{{ 'fs.inotify.max_user_instances = ' inotify_max_user_instances if inotify_max_user_instances != None }}
+{{ 'fs.inotify.max_user_watches = ' inotify_max_user_watches if inotify_max_user_watches != None }}
+{{ 'net.core.somaxconn = ' net_core_somaxconn if net_core_somaxconn != None }}
+{{ 'vm.max_map_count= ' max_map_count if max_map_count != None}}
+{{ 'vm.swappiness= ' swappiness if swappiness  != None }}

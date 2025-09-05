@@ -1,43 +1,57 @@
 ---
 apt_cache_valid_time: 3600
 apt_install_packages:
-  - nload
-  - htop
-  - iotop
-  - git
-  - ncdu
-  - tmux
-  - ncftp
-  - mtr
+  # System configuration:
+  - sudo
+  - apt-dater-host  # to remotely manage updates via apt-dater
+  - tzdata  # for timezones
+  - systemd-timesyncd # available Debian 10 / Ubuntu 20.04 upwards  client only ntp
+  - needrestart  # checks which daemons need to be restarted after library upgrades
+  - net-tools  # networking toolkit
+  - openssh-client
+
+  # Admin tools
+  # debug:
+  - nload  # realtime console network usage monitor
+  - htop  # like task manager
+  - iotop  # Why is the disk churning so much?
+  - ncdu  # disk usage
+  - mtr  # traceroute + ping
+  - neofetch  # system info
+  - dnsutils  # TODO: "Transitional package" for bind9-~
+  # - bind9-dnsutils  # dig, nslookup, nsupdate
+  - nmap  # network exploration and security auditing
+
+  # download
   - curl
   - wget
-  - nano
   - rsync
+  - ncftp  # ftp client
+
+  # compress
   - zip
   - unzip
-  - dnsutils
-  - sudo
-  - apt-dater-host
-  - systemd-timesyncd # available Debian 10 / Ubuntu 20.04 upwards
-  - tzdata # for timezone
-  - needrestart
-  - neofetch
   - pigz
-  - mc
-  - nmap
-  - net-tools
-  - openssh-client
-  - python3-pip
-  - libffi-dev
-  - libssl-dev
+
+  # other tools:
+  - tmux  # open multiple persistent terminals
+  - mc  # text-mode full-screen file manager
+  - git
+  - nano
+
+  # Misc
+  - python3-pip  # ?
+  - libffi-dev  # ?
+  - libssl-dev  # ?
 apt_remove_packages:
-  - ntp
+  - ntp  # replaced with systemd-timesyncd
 apt_setup_unattended_upgrades: true
 timezone_default: Europe/Berlin
 # ca_certificates:
 smtp_server: ""
 swap_file_path: "/swapfile"
 swap_size_mb: 4096
+setup_default_shell: /bin/bash
 
 # defaults file for role_ssh_config
 ssh_permit_root_login: "no"
@@ -54,14 +68,21 @@ ssh_pubkey_authentication: "yes"
 ssh_challenge_response_authentication: "no"
 ufw_enabled: "false"
 
+# Auto Upgrade:
 auto_upgrade_enable: 1
 auto_upgrade_update_package_list: 1
 auto_upgrade_unattended_upgrade: 1
 auto_upgrade_autoclean_interval: 7
+auto_upgrade_mail:
 
-inotify_max_queued_events: 16384
-inotify_max_user_instances: 32768
-inotify_max_user_watches: 8192
-max_map_count: 524288
-swappiness: 10
-net_core_somaxconn: 65535
+# Change these if you know what you're doing or a random app tells you to:
+# File system watchers
+inotify_max_queued_events:
+inotify_max_user_instances:
+inotify_max_user_watches:
+# Smth about memory consumption
+max_map_count:
+# How soon to write to swap instead of RAM
+swappiness:
+# smth about TCP/IP connections
+net_core_somaxconn:

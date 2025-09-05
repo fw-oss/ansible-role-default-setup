@@ -43,19 +43,24 @@
 - name: Flush Handlers
   ansible.builtin.meta: flush_handlers
 
+# Needrestart: Don't require the user to acknowledge pending updates
 - name: Needrestart | disable microcode module
   ansible.builtin.lineinfile:
     path: /etc/needrestart/needrestart.conf
     regexp: "^#\\$nrconf{ucodehints}"
     line: "$nrconf{ucodehints} = 0;"
     state: present
+  when: apt_install_packages is ansible.builtin.contains('needrestart')
 
-- name: General | set default shell to /bin/bash
+- name: General | set default shell
   ansible.builtin.lineinfile:
     dest: /etc/default/useradd
     regexp: "^SHELL"
-    line: "SHELL=/bin/bash"
+    line: "SHELL={{ setup_default_shell }}"
     state: present
+  when:
+    - setup_default_shell is defined
+    - setup_default_shell | length
 
 # unattended upgrades
 - name: Apt | install unattended-upgrades
@@ -124,6 +129,7 @@
     state: started
     enabled: true
   changed_when: false
+  when: apt_install_packages is ansible.builtin.contains('systemd-timesyncd')
 
 - name: Timezone | set timezone
   community.general.timezone:
@@ -134,6 +140,7 @@
   ansible.builtin.get_url:
     url: "{{ item }}"
     dest: "/usr/local/share/ca-certificates/{{ item | basename }}"
+    mode: "0644"
   with_items: "{{ ca_certificates }}"
   notify: Root ca | update ca certificate store
   when: ca_certificates is defined and ca_certificates | length
@@ -215,9 +222,16 @@
 - name: Define fs.inotify.max_inotify_instances system-wide
   ansible.builtin.template:
     src: 20-basic-setup.conf.j2
-    dest: /etc/sysctl.d/20-basic-setup.conf
+    dest: /etc/sysctl.d/20-ansible-fw-oss-default-setup.conf
     mode: "0644"
     owner: root
     group: root
   notify: Reload sysctl
   diff: true
+  when:
+    inotify_max_queued_events != None
+    or inotify_max_user_instances != None
+    or inotify_max_user_watches != None
+    or max_map_count != None
+    or swappiness != None
+    or net_core_somaxconn != None
