@@ -1,6 +1,6 @@
-{{ 'fs.inotify.max_queued_events = ' inotify_max_queued_events if inotify_max_queued_events | length }}
-{{ 'fs.inotify.max_user_instances = ' inotify_max_user_instances if inotify_max_user_instances | length }}
-{{ 'fs.inotify.max_user_watches = ' inotify_max_user_watches if inotify_max_user_watches | length }}
-{{ 'net.core.somaxconn = ' net_core_somaxconn if net_core_somaxconn | length }}
-{{ 'vm.max_map_count= ' max_map_count if max_map_count | length}}
-{{ 'vm.swappiness= ' swappiness if swappiness  | length }}
+{{ 'fs.inotify.max_queued_events = ' inotify_max_queued_events if inotify_max_queued_events != None }}
+{{ 'fs.inotify.max_user_instances = ' inotify_max_user_instances if inotify_max_user_instances != None }}
+{{ 'fs.inotify.max_user_watches = ' inotify_max_user_watches if inotify_max_user_watches != None }}
+{{ 'net.core.somaxconn = ' net_core_somaxconn if net_core_somaxconn != None }}
+{{ 'vm.max_map_count= ' max_map_count if max_map_count != None}}
+{{ 'vm.swappiness= ' swappiness if swappiness  != None }}

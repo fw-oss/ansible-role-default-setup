@@ -229,9 +229,9 @@
   notify: Reload sysctl
   diff: true
   when:
-    inotify_max_queued_events is defined
-    or inotify_max_user_instances is defined
-    or inotify_max_user_watches is defined
-    or max_map_count  is defined
-    or swappiness is defined
-    or net_core_somaxconn  is defined
+    inotify_max_queued_events != None
+    or inotify_max_user_instances != None
+    or inotify_max_user_watches != None
+    or max_map_count != None
+    or swappiness != None
+    or net_core_somaxconn != None
