@@ -81,12 +81,13 @@
 - name: Ssh | secure ssh
   ansible.builtin.include_tasks: ssh.yml
 
-# sudoers config
+# sudoers config ------------------------ wrong role
 - name: Create group "admin"
   ansible.builtin.group:
     name: admin
     state: present
 
+# Passwordless sudo 
 - name: Configure sudoers file 1/4
   ansible.builtin.lineinfile:
     path: /etc/sudoers
@@ -100,12 +101,14 @@
     line: 'Defaults mailto="{{ ssh_login_notification_mail }}"'
   when: ssh_login_notification_mail is defined and ssh_login_notification_mail | length
 
+# Disable notification every time a user runs sudo
 - name: Configure sudoers file 3/4
   ansible.builtin.lineinfile:
     path: /etc/sudoers
     regexp: "^Defaults mail_always"
     state: absent
 
+# Insults when you type the wrong sudo password - on passwordless sudo
 - name: Configure sudoers file 4/4
   ansible.builtin.lineinfile:
     path: /etc/sudoers
@@ -121,6 +124,7 @@
       PS1="\[\033[1;41;37m\]\u\[\033[0;41;37m\]@$(hostname -f
       {{ '| sed "s/.' + domain + '//"' if domain is defined }})(\l):\w\[\033[41;00m\]$ "
   diff: true
+# ------------------------------------------------
 
 # ntp
 - name: Timezone | start ntp service
