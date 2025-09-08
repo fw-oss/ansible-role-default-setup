@@ -23,6 +23,7 @@ Ansible Version 2.9
     auto_upgrade_mail_trigger: on-change
     mail_configuration: smarthost
     smtp_server: contoso-com.mail.protection.outlook.com
+    sudo_notification_mail: duke@company.example
     ssh_login_notification_mail: duke@company.example it-support@example.com
     sender_email_domain: contoso.com
     ssh_login_notification_webhooks:
