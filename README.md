@@ -67,34 +67,153 @@ Ansible Version 2.9
 
 ## Details
 
-- installs packages
-- sets hostname
-- hardenes ssh:
-    - install, config and enable fail2ban
-    - disable ufw
-    - permit/disallow Root login
-    - set/disable ClientAliveInterval and ClientAliveCountMax
-    - set port (and allow in ufw)
-    - permit/disallow Password auth
-    - permit/disallow X11 Forwarding
-    - set/disable MaxAuthTries
-    - permit/disallow TCP Forwarding
-    - permit/disallow Agent Forwarding
-    - define file for authorized keys
-    - PubkeyAuthentication
-    - ChallengeResponseAuthentication
-- configures sudo:
-    - creates group "admin" with passwordless full privileges
-    - sets mail adress for unauth. sudo attempts (excl. -l, -v)  
-- changes root prompt
-- sets timezone
-- mail on login
-- sets swap:
-    - check for swap
-    - check for zfs
-    - if both fail: create swapfile etc.
-- some kernel stuff:
-    - swapiness
+### Upgrades and installs packages, reboots if necessary
+
+```yaml
+apt_cache_valid_time: 3600
+apt_install_packages:
+  # System configuration:
+  - sudo
+  - apt-dater-host  # to remotely manage updates via apt-dater
+  - tzdata  # for timezones
+  - systemd-timesyncd # available Debian 10 / Ubuntu 20.04 upwards  client only ntp
+  - needrestart  # checks which daemons need to be restarted after library upgrades
+  - net-tools  # networking toolkit
+  - openssh-client
+
+  # Admin tools
+  # debug:
+  - nload  # realtime console network usage monitor
+  - htop  # like task manager
+  - iotop  # Why is the disk churning so much?
+  - ncdu  # disk usage
+  - mtr  # traceroute + ping
+  - neofetch  # system info
+  - dnsutils  # TODO: "Transitional package" for bind9-~
+  # - bind9-dnsutils  # dig, nslookup, nsupdate
+  - nmap  # network exploration and security auditing
+
+  # download
+  - curl
+  - wget
+  - rsync
+  - ncftp  # ftp client
+
+  # compress
+  - zip
+  - unzip
+  - pigz
+
+  # other tools:
+  - tmux  # open multiple persistent terminals
+  - mc  # text-mode full-screen file manager
+  - git
+  - nano
+
+  # Misc
+  - python3-pip  # ?
+  - libffi-dev  # ?
+  - libssl-dev  # ?
+apt_remove_packages:
+  - ntp  # replaced with systemd-timesyncd
+```
+
+### Sets hostname to inventory hostname
+
+### Default shell
+
+```yaml
+setup_default_shell: /bin/bash
+```
+
+### Enable automatic upgrades
+
+```yaml
+apt_setup_unattended_upgrades: true
+
+auto_upgrade_enable: 1
+auto_upgrade_update_package_list: 1  #  package lists refreshing interval in days. 0 to disable
+auto_upgrade_unattended_upgrade: 1  # upgrade interval in days. 0 to disable
+auto_upgrade_autoclean_interval: 7  # remove obsolete packages every x days
+
+auto_upgrade_mail:
+auto_upgrade_mail_trigger:  # Set this value to one of: "always", "only-on-error" or "on-change"
+
+```
+
+### SSH hardening
+
+  - install, config and enable fail2ban
+  - disable ufw
+  - permit/disallow Root login
+  - set/disable ClientAliveInterval and ClientAliveCountMax
+  - set port (and allow in ufw)
+  - permit/disallow Password auth
+  - permit/disallow X11 Forwarding
+  - set/disable MaxAuthTries
+  - permit/disallow TCP Forwarding
+  - permit/disallow Agent Forwarding
+  - define file for authorized keys
+  - PubkeyAuthentication
+  - ChallengeResponseAuthentication
+
+### Make root shell prompt red
+
+#### Variable
+
+```yaml
+domain:  # used to split $(hostname -f)
+```
+
+#### Code
+```bash
+PS1="\[\033[1;41;37m\]\u\[\033[0;41;37m\]@$(hostname -f
+      {{ '| sed "s/.' + domain + '//"' if domain is defined }})(\l):\w\[\033[41;00m\]$ "
+```
+
+#### Usage Example
+
+hostname = worker02.dmz.company.org,  
+`domain: company.org`  
+Result (in red):
+```bash
+root@worker02.dmz(0):/home/user$ █
+```
+
+### Set default timezone
+
+Replaces `ntp` with `systemd-timesyncd`, a client-only ntp implementation.  
+See package list above  
+
+```yaml
+timezone_default: Europe/Berlin
+```
+### Download CA certificates
+
+```yaml
+ca_certificates: []
+```
+
+### Configures mail
+
+tbd
+
+### swap
+
+tbd
+- check for swap
+- check for zfs
+- if both fail: create swapfile etc.
+
+### ensure a periodic fstrim run
+
+### kernel settings
+
+tbd
+
+### Notifications
+
+tbd
 
 ## Role Variables
 

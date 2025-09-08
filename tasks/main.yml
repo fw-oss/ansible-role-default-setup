@@ -7,7 +7,7 @@
     autoremove: true
     autoclean: true
     update_cache: true
-    cache_valid_time: 3600
+    cache_valid_time: "{{ apt_cache_valid_time }}"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Apt | remove default packages
@@ -159,3 +159,6 @@
     or max_map_count != None
     or swappiness != None
     or net_core_somaxconn != None
+
+- name: Configure notifications
+  ansible.builtin.include_tasks: notification.yml
