@@ -8,7 +8,7 @@ Ansible Version 2.9
 
 ## Dependencies
 
-[Community General Collection](https://docs.ansible.com/ansible/latest/collections/community/general/index.html) (comes with `ansible`, but not with `ansible-core`) for `community.general.timezone`, `community.general.ufw ` 
+[Community General Collection](https://docs.ansible.com/ansible/latest/collections/community/general/index.html) (comes with `ansible`, but not with `ansible-core`) for `community.general.timezone`, `community.general.ufw`  
 [Ansible Posix Collection](https://docs.ansible.com/ansible/latest/collections/ansible/posix/index.html) (comes with `ansible`, but not with `ansible-core`) for `ansible.posix.mount`
 
 
@@ -80,7 +80,6 @@ apt_install_packages:
   - needrestart  # checks which daemons need to be restarted after library upgrades
   - net-tools  # networking toolkit
   - openssh-client
-
   # Admin tools
   # debug:
   - nload  # realtime console network usage monitor
@@ -92,24 +91,20 @@ apt_install_packages:
   - dnsutils  # TODO: "Transitional package" for bind9-~
   # - bind9-dnsutils  # dig, nslookup, nsupdate
   - nmap  # network exploration and security auditing
-
   # download
   - curl
   - wget
   - rsync
   - ncftp  # ftp client
-
   # compress
   - zip
   - unzip
   - pigz
-
   # other tools:
   - tmux  # open multiple persistent terminals
   - mc  # text-mode full-screen file manager
   - git
   - nano
-
   # Misc
   - python3-pip  # ?
   - libffi-dev  # ?
@@ -126,7 +121,7 @@ apt_remove_packages:
 setup_default_shell: /bin/bash
 ```
 
-### Enables automatic upgrades
+### Enables automatic updates
 
 ```yaml
 apt_setup_unattended_upgrades: true
@@ -143,7 +138,7 @@ auto_upgrade_mail_trigger:  # Set this value to one of: "always", "only-on-error
 
 ### SSH hardening
 
-configuring `/etc/ssh/sshd_config`
+Configures `/etc/ssh/sshd_config`
 
 ```yaml
 # Specifies whether root can log in using ssh.
@@ -246,7 +241,7 @@ Checks that service `fstrim.timer` is enabled
 
 ### Kernel settings
 
-creates a file at `/etc/sysctl.d/20-ansible-fw-oss-default-setup.conf` if at least one of the following vars are defined
+Creates a file at `/etc/sysctl.d/20-ansible-fw-oss-default-setup.conf` if at least one of the following vars are defined
 
 ```yaml
 # Change these if you know what you're doing or a random app tells you to:
@@ -274,8 +269,8 @@ sudo_notification_mail:
 
 #### SSH login mail
 
-if `ssh_login_notification_mail` is set, an email with relevant info is sent on every SSH login via exim  
-sends to `inventory_hostname@sender_email_domain` if `sender_email_domain` is defined, else to whatever default is configured  
+If `ssh_login_notification_mail` is set, an email with relevant info is sent on every SSH login via exim.  
+Sends to `inventory_hostname@sender_email_domain` if `sender_email_domain` is defined, else to whatever default is configured  
 
 command:  
 
@@ -295,10 +290,10 @@ command:
 
 #### SSH login webhooks
 
-if `ssh_login_notification_webhooks` is set, the server tries to `curl` the given url on every SSH login  
+If `ssh_login_notification_webhooks` is set, the server tries to `curl` the given url on every SSH login.  
 Be careful, as you can block login with a wrong URL! Timeouts via `-m 10` are recommended  
 
-remove old webhooks by adding `state: absent` (only `name:` required, see examples)  
+Remove old webhooks by adding `state: absent` (only `name:` required there, see examples)  
 
 ```yml
 ssh_login_notification_webhooks:
@@ -314,4 +309,4 @@ MIT
 
 ## Author Information
 
-FW-OSS, 2025
+FW OSS, 2025

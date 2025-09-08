@@ -1,4 +1,5 @@
 ---
+# Packages
 apt_cache_valid_time: 3600
 apt_install_packages:
   # System configuration:
@@ -45,15 +46,15 @@ apt_install_packages:
   - libssl-dev  # ?
 apt_remove_packages:
   - ntp  # replaced with systemd-timesyncd
-apt_setup_unattended_upgrades: true
-timezone_default: Europe/Berlin
-# ca_certificates:
-smtp_server: ""
-swap_file_path: "/swapfile"
-swap_size_mb: 4096
-setup_default_shell: /bin/bash
 
-# defaults file for role_ssh_config
+# ca_certificates:
+
+# Email
+mail_configuration:
+# sender_email_domain:
+smtp_server: ""
+
+# SSH config
 ssh_permit_root_login: "no"
 ssh_client_alive_interval: 300
 ssh_client_alive_count_max: 5
@@ -66,15 +67,22 @@ ssh_allow_agent_forwarding: "no"
 ssh_authorized_keys_file: ".ssh/authorized_keys"
 ssh_pubkey_authentication: "yes"
 ssh_challenge_response_authentication: "no"
+
 ufw_enabled: "false"
 
 # Auto Upgrade:
+apt_setup_unattended_upgrades: true
 auto_upgrade_enable: 1
 auto_upgrade_update_package_list: 1
 auto_upgrade_unattended_upgrade: 1
 auto_upgrade_autoclean_interval: 7
 auto_upgrade_mail:
 
+# System
+timezone_default: Europe/Berlin
+swap_file_path: "/swapfile"
+swap_size_mb: 4096
+setup_default_shell: /bin/bash
 # Change these if you know what you're doing or a random app tells you to:
 # File system watchers
 inotify_max_queued_events:
