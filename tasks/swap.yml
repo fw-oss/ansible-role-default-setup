@@ -1,8 +1,8 @@
 ---
-
 - name: Swap | create swap file
   ansible.builtin.command: dd if=/dev/zero of={{ swap_file_path }} bs=1M count={{ swap_size_mb }}
   register: swapfile_register_create
+  changed_when: true
 
 - name: Swap | set swap file permissions
   ansible.builtin.file:
@@ -14,11 +14,11 @@
 
 - name: Swap | initialize swap file
   ansible.builtin.command: mkswap {{ swap_file_path }}
-  when: "swapfile_register_create is changed"
+  changed_when: true
 
 - name: Swap | enable swap file
   ansible.builtin.command: swapon {{ swap_file_path }}
-  when: "swapfile_register_create is changed"
+  changed_when: true
 
 - name: Swap | manage swap file in /etc/fstab
   ansible.posix.mount:

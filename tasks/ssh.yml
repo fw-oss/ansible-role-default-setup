@@ -5,11 +5,11 @@
     update_cache: true
     cache_valid_time: 3600
 
-- name: Install necessary packages
+- name: Install necessary packages  # TODO move
   ansible.builtin.apt:
     name:
       - fail2ban
-      - ufw
+      - ufw  # todo
 
 - name: Disable ufw on peers
   community.general.ufw:
