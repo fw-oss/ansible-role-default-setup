@@ -18,7 +18,6 @@ apt_install_packages:
   - iotop  # Why is the disk churning so much?
   - ncdu  # disk usage
   - mtr  # traceroute + ping
-  - neofetch  # system info
   - dnsutils  # TODO: "Transitional package" for bind9-~
   # - bind9-dnsutils  # dig, nslookup, nsupdate
   - nmap  # network exploration and security auditing
