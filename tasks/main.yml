@@ -60,7 +60,7 @@
     state: present
   when:
     - setup_default_shell is defined
-    - setup_default_shell | length
+    - setup_default_shell | length > 0
 
 # unattended upgrades
 - name: Apt | install unattended-upgrades
