@@ -11,13 +11,14 @@ galaxy_info:
   platforms:
     - name: Ubuntu
       versions:
-        - xenial
-        - bionic
         - focal
+        - jammy
+        - noble
     - name: Debian
       versions:
-        - stretch
-        - buster
+        - bullseye
+        - bookworm
+        - trixie
   galaxy_tags:
     - fwoss
     - system

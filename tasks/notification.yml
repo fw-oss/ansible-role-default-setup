@@ -1,0 +1,57 @@
+---
+- name: Configure sudoers default mail
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    regexp: "^Defaults mailto="
+    line: 'Defaults mailto="{{ sudo_notification_mail }}"'
+  when: sudo_notification_mail is defined and sudo_notification_mail | length
+
+- name: Don't notify every time a user runs sudo
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    regexp: "^Defaults mail_always"
+    state: absent
+
+- name: Add script for login mails
+  ansible.builtin.template:
+    src: send-mail-on-ssh-login.sh.j2
+    dest: /usr/local/bin/send-mail-on-ssh-login.sh
+    mode: "0770"
+    owner: root
+    group: root
+  when: ssh_login_notification_mail is defined and ssh_login_notification_mail | length
+  diff: true
+
+- name: Enable mails on login
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sshd
+    line: "session optional pam_exec.so /usr/local/bin/send-mail-on-ssh-login.sh"
+    state: "{{ 'present'
+      if ssh_login_notification_mail is defined
+      and ssh_login_notification_mail | length
+      else 'absent' }}"  # deactivate
+  diff: true
+
+- name: Add script for login webhook
+  ansible.builtin.template:
+    src: send-webhook-on-ssh-login.sh.j2
+    dest: /usr/local/bin/send-webhook-on-ssh-login-{{ item.name }}.sh
+    mode: "0770"
+    owner: root
+    group: root
+  when:
+    - ssh_login_notification_webhooks is defined
+    - not ( item.state is defined and item.state == 'absent' )
+  diff: true
+  loop: "{{ ssh_login_notification_webhooks }}"
+
+- name: Enable webhook on login
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sshd
+    line: >-
+      session optional pam_exec.so
+      /usr/local/bin/send-webhook-on-ssh-login-{{ item.name }}.sh
+    state: "{{ item.state | default('present') }}"
+  when: ssh_login_notification_webhooks is defined
+  diff: true
+  loop: "{{ ssh_login_notification_webhooks }}"
